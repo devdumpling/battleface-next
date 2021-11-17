@@ -27,7 +27,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   };
 
   res.json({
-    token: jwt.sign({ username }, SECRET),
+    token: jwt.sign({ user }, SECRET),
     user,
   });
 }

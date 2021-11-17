@@ -113,7 +113,7 @@ const Home = () => {
       <Footer>
         <Text>Devon Wells -- Battleface Interview Challenge 11.16.21</Text>
       </Footer>
-      {/* <CTA /> */}
+      <CTA />
     </Container>
   );
 };
