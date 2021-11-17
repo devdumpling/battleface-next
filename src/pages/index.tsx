@@ -7,6 +7,7 @@ import {
   FormHelperText,
   Input,
   Button,
+  Fade,
 } from "@chakra-ui/react";
 import { CheckCircleIcon, LinkIcon } from "@chakra-ui/icons";
 import { useState } from "react";
@@ -22,24 +23,59 @@ import React from "react";
 
 import axios from "axios";
 
+interface IUser {
+  id: number;
+  username: string;
+}
+
 const Home = () => {
   const [username, setUsername] = useState("");
+  const [user, setUser] = useState<IUser | null>(null);
 
   const handleLogin = async (username) => {
     try {
-      const res = await axios.post("/api/login", {
-        username,
-      });
-      console.log(res);
+      const res = await axios.post(
+        "/api/login",
+        {
+          username,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (res.status === 200 && res.data?.user) {
+        setUser(res.data.user);
+      } else {
+        throw new Error("An unexpected error occurred.");
+      }
     } catch (err) {
       console.error(err);
     }
-  }
+  };
 
   return (
     <Container height="100vh">
       <Hero />
       <Main>
+        {user ? (
+          <>
+            <Fade in={!!user}>
+              <Text fontSize="xl" fontWeight="bold" color="gray.500">
+                Welcome back, {user.username}!
+              </Text>
+
+              <Text fontSize="lg" color="gray.500">
+                You are now logged in.
+              </Text>
+            </Fade>
+          </>
+        ) : (
+          <Text fontSize="xl" fontWeight="bold" color="gray.500">
+            Please log in to get started.
+          </Text>
+        )}
         <Formik
           initialValues={{ username: "" }}
           onSubmit={(values, { setSubmitting }) => {
