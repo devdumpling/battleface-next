@@ -19,18 +19,23 @@ import { Main } from "../components/Main";
 import { DarkModeSwitch } from "../components/DarkModeSwitch";
 import { CTA } from "../components/CTA";
 import { Footer } from "../components/Footer";
-import React from "react";
+
+import { useCollection } from "react-firebase-hooks/firestore";
+import { collection } from "firebase/firestore";
+import { db } from "../utils/firebase/clientApp";
 
 import axios from "axios";
-
-interface IUser {
-  id: number;
-  username: string;
-}
+import { IUser } from "../types";
 
 const Home = () => {
-  const [username, setUsername] = useState("");
   const [user, setUser] = useState<IUser | null>(null);
+
+  /* const [quotes, quotesLoading, quotesError] = useCollection(
+    collection(db, "quotes"),
+    {}
+  );
+
+  console.log(quotes.docs.map((doc) => doc.data())); */
 
   const handleLogin = async (username) => {
     try {
