@@ -25,7 +25,7 @@ export const TotalQuotes = () => {
     }, 0) / (totalQuotes || 1);
 
   return (
-    <Flex gridGap={2} position="fixed" top="1rem" left="1rem">
+    <Flex p={2} gridGap={2} position="fixed" top="1rem" left="1rem">
       {loading && <Spinner color="teal.500" size="sm" />}
       {quotes && (
         <>
