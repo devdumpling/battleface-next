@@ -1,39 +1,102 @@
-# Example app with [chakra-ui](https://github.com/chakra-ui/chakra-ui) and TypeScript
+# Battleface Full Stack Coding Challenge
 
-This example features how to use [chakra-ui](https://github.com/chakra-ui/chakra-ui) as the component library within a Next.js app with TypeScript.
+[Devon Wells](https://www.github.com/devdumplin), 11.16.21
 
-Next.js and chakra-ui have built-in TypeScript declarations, so we'll get autocompletion for their modules straight away.
+This repo documents my process and links to the used repositories/further documentation. 
 
-We are connecting the Next.js `_app.js` with `chakra-ui`'s Provider and theme so the pages can have app-wide dark/light mode. We are also creating some components which shows the usage of `chakra-ui`'s style props.
+I'm going to write it in a conversational manner, sort of like a blog. That way you can get an insight into what I'm thinking in my approach!
 
-## Preview
+## Tech Used
 
-Preview the example live on [StackBlitz](http://stackblitz.com/):
+Next.js
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/vercel/next.js/tree/canary/examples/with-chakra-ui-typescript)
+## Blog
 
-## Deploy your own
+### Init
 
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example):
+The first thing I do is bootstrap a simple Next app with Chakra-UI and Typescript. This gets us going. 
+Normally I would add ESLint after that for some basic linting, but Next 12 is now bundled with ESLint out of the box. 
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/vercel/next.js/tree/canary/examples/with-chakra-ui-typescript&project-name=with-chakra-ui-typescript&repository-name=with-chakra-ui-typescript)
+Running `yarn dev` gets our local server going and everything looks good. Perfect.
 
-## How to use
+### API
 
-### Using `create-next-app`
+Okay we're going to be building an API deployed to serverless functions using Next. 
+Next makes this ezpz. We're going to create an `api` dir under `pages` and build our functions in here.
 
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) or [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) to bootstrap the example:
+To test things out let's just make a health check first. 
 
-```bash
-npx create-next-app --example with-chakra-ui-typescript with-chakra-ui-typescript-app
-# or
-yarn create next-app --example with-chakra-ui-typescript with-chakra-ui-typescript-app
+```ts
+import type { NextApiRequest, NextApiResponse } from 'next';
+
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  res.statusCode = 200;
+  res.json({ status: 'ok' });
+}
 ```
 
-Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
+Navigating to `localhost:3000/api/status` gives us the JSON we expect.
 
-## Notes
+Since that works, let's move on to creating the necessary endpoints for our API. We'll make a `/login` endpoint that gives us back a token for a mocked user.
 
-Chakra has supported Gradients and RTL in `v1.1`. To utilize RTL, [add RTL direction and swap](https://chakra-ui.com/docs/features/rtl-support).
+**Authorization**
 
-If you don't have multi-direction app, you should make `<Html lang="ar" dir="rtl">` inside `_document.ts`.
+Let's start with basic authorization via JWTs. We're going to skip over authentication and just have a mock user for now.
+
+Add packages for JWT (and optionally types)
+
+```
+yarn add jsonwebtoken
+yarn add @types/jsonwebtoken
+```
+
+Next we'll make a basic `/login` endpoint for retrieving a token. For now we're just going to give a token to any username. (re: there's no authentication). 
+
+For now we can keep it simple. 
+
+```ts
+import type { NextApiRequest, NextApiResponse } from 'next';
+import jwt from 'jsonwebtoken';
+
+// TODO -- add a secret key to the .env file
+const SECRET = 'secret'
+
+export default function handler(req: NextApiRequest, res: NextApiResponse) {  
+  if (!req.body) {
+    res.statusCode = 400;
+    res.json({ error: 'Error: No request body' });
+    return;
+  }
+
+  // TODO add authentication -- maybe out of scope for this challenge  
+  const { username, password } = req.body;
+
+  if (!username) {
+    res.statusCode = 400;
+    res.json({ error: 'Error: Please provide a username' });
+    return;
+  }
+
+  res.json({
+    token: jwt.sign({ username }, SECRET),
+    data: {
+      username
+    }
+  })
+}
+```
+
+That'll get us going. Now if we hit `/api/login` with a POST request containing `body.username`, it'll give us back a signed JWT. Cool.
+
+**Test Protected Route**
+
+Now that we have a way to retrieve a token, let's try storing that token in localStorage and hitting a protected route with it. First, we'll need a protected route. 
+
+## API
+
+I'll use Vercel serverless functions as the backbone of this simple API.
+
+## Client App
+
+Quickly bootstrapped a Next app with Chakra-UI and Typescript.
+
