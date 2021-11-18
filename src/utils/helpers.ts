@@ -4,7 +4,9 @@ const validateDates = (start_date: string, end_date: string) => {
   const start = new Date(start_date);
   const end = new Date(end_date);
 
-  return start < end;
+  // <= because it seems reasonable to provide travel insurance for only one day
+  // Hopefully this assumptions makes sense but if not just make this <
+  return start <= end;
 };
 
 const validateAge = (age: number) => {

@@ -160,7 +160,7 @@ const Home = () => {
       if (res.status === 200 && res.data?.token && res.data?.user) {
         // Using local storage is not ideal for prod! Vulnerable to XSS/CSRF attacks. This is just for demoing.
         // Better to use a secure cookie and/or access/refresh token pattern.
-        // More discussion: 
+        // More discussion:
         // https://dev.to/cotter/localstorage-vs-cookies-all-you-need-to-know-about-storing-jwt-tokens-securely-in-the-front-end-15id
         window.localStorage.setItem("token", res.data.token);
         setUser(res.data.user);
@@ -187,6 +187,14 @@ const Home = () => {
               </Fade>
             </Box>
             <QuoteForm />
+            <Button
+              maxWidth="fit-content"
+              variant="link"
+              colorScheme="teal"
+              onClick={handleLogout}
+            >
+              Sign Out
+            </Button>
           </Flex>
         ) : (
           <>
