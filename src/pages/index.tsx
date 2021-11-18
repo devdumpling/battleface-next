@@ -6,6 +6,7 @@ import {
   Box,
   Heading,
   Flex,
+  Code,
   Stack,
   Input,
   Button,
@@ -21,24 +22,55 @@ import { DarkModeSwitch } from "../components/DarkModeSwitch";
 import { CTA } from "../components/CTA";
 import { Footer } from "../components/Footer";
 import { QuoteForm } from "../components/QuoteForm";
+import { TotalQuotes } from "../components/TotalQuotes";
 
-import { useCollection } from "react-firebase-hooks/firestore";
-import { collection } from "firebase/firestore";
-import { db } from "../utils/firebase/clientApp";
+import CountUp from "react-countup";
 
 import axios from "axios";
 import { IUser, QuotationResponse } from "../types";
 
-const CurrentQuote = ({ quote }: { quote: QuotationResponse }) => (
-  <Stack spacing={0}>
-    <Text fontSize="4xl" color="teal">
-      Total: ${quote.total.toFixed(2)} {quote.currency_id}
-    </Text>
-    <Text fontSize="sm" color="gray.500">
-      Unique Quote Id: {quote.quotation_id}
-    </Text>
-  </Stack>
-);
+const CurrentQuote = ({ quote }: { quote: QuotationResponse }) => {
+  const [showStats, setShowStats] = useState(false);
+
+  return (
+    <Stack spacing={0}>
+      <Text fontSize="6xl" color="teal">
+        $
+        <CountUp
+          useEasing
+          end={Number(quote.total.toFixed(2))}
+          duration={2}
+        />{" "}
+        {quote.currency_id} 🎉 🚀 🌒
+      </Text>
+      <Flex flexDirection="column" alignItems="baseline">
+        <Text fontSize="sm" color="gray.500">
+          Unique Quote Id: {quote.quotation_id}
+        </Text>
+        <Button
+          size="sm"
+          variant="link"
+          onClick={() => setShowStats(!showStats)}
+          color="gray.500"
+        >
+          Stats for nerds
+        </Button>
+        {showStats && (
+          <Box width="100%" borderWidth="1px" borderRadius="lg" p={4} m={4}>
+            <Code width="100%" fontSize="sm" color="gray.500">
+              quotation_id: {quote.quotation_id} <br />
+              currency_id: {quote.currency_id} <br />
+              total: {quote.total.toFixed(2)} <br />
+              <br />
+              // would never show this in a real app obviously 🤷‍♂️ <br />
+              token: {window.localStorage.getItem("token")} <br />
+            </Code>
+          </Box>
+        )}
+      </Flex>
+    </Stack>
+  );
+};
 
 const Home = () => {
   const [user, setUser] = useState<IUser | null>(null);
@@ -63,13 +95,6 @@ const Home = () => {
       fetchUser();
     }
   }, [user]);
-
-  /* const [quotes, quotesLoading, quotesError] = useCollection(
-    collection(db, "quotes"),
-    {}
-  );
-
-  console.log(quotes.docs.map((doc) => doc.data())); */
 
   const handleLogout = () => {
     window.localStorage.removeItem("token");
@@ -177,8 +202,9 @@ const Home = () => {
       </Main>
 
       <DarkModeSwitch />
+      <TotalQuotes />
       <Footer>
-        <Text>Devon Wells -- Battleface Interview Challenge Nov 21</Text>
+        Devon Wells -- Battleface Fullstack Interview Challenge -- 11.2021
       </Footer>
       <CTA />
     </Container>

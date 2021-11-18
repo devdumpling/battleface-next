@@ -7,10 +7,12 @@ import {
   FormHelperText,
   Box,
   Stack,
+  Icon,
   Flex,
   Input,
   Button,
 } from "@chakra-ui/react";
+import { FaPlaneArrival, FaPlaneDeparture } from "react-icons/fa";
 
 import { QuotationRequest } from "../types";
 
@@ -87,7 +89,9 @@ export const QuoteForm = ({ setQuote }: QuoteFormProps) => {
                 <Field name="start_date" placeholder="Start Date">
                   {({ field }) => (
                     <FormControl id="start_date">
-                      <FormLabel>Start Date</FormLabel>
+                      <FormLabel>
+                        Start Date <Icon as={FaPlaneDeparture} />
+                      </FormLabel>
                       <Input {...field} id="start_date" />
                       <FormHelperText>
                         When does your trip start? (YYYY-MM-DD)
@@ -98,7 +102,9 @@ export const QuoteForm = ({ setQuote }: QuoteFormProps) => {
                 <Field name="end_date" placeholder="End Date">
                   {({ field }) => (
                     <FormControl id="end_date">
-                      <FormLabel>End Date</FormLabel>
+                      <FormLabel>
+                        End Date <Icon as={FaPlaneArrival} />
+                      </FormLabel>
                       <Input {...field} id="end_date" />
                       <FormHelperText>
                         And when does it end? (YYYY-MM-DD)
