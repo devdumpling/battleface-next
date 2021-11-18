@@ -20,6 +20,8 @@ One high level consideration I made early on is to focus on the API and authoriz
 
 Another thing I would add if I had more time is more robust error-handling on the frontend. Curently, if an error happens it just gets logged to `console.error`. I figured that was okay for this, especially since it's not being graded on design?
 
+One final addition would be to handle currency codes properly. The prompt specified a rate for a few codes, so I'm using that across the board. I assume this should change depending on the code to some other rates. Ideally I'd handle the conversion and then also show the correct currency symbol on the frontend. It would also be nice to add features for selecting the currency codes (and a datepicker), but that felt unnecessary for a prototype. Hopefully that's an okay assumption!
+
 Please don't hesitate to reach out with any questions, comments, or concerns!
 I documented a lot of the code to make it clear what/why/how I do what I do.
 
