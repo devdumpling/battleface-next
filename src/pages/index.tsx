@@ -200,10 +200,9 @@ const Home = () => {
           </>
         )}
       </Main>
-
       <DarkModeSwitch />
       <TotalQuotes />
-      <Footer>
+      <Footer color="gray.500">
         Devon Wells -- Battleface Fullstack Interview Challenge -- 11.2021
       </Footer>
       <CTA />
