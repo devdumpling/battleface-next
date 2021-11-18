@@ -34,9 +34,18 @@ import { IUser, QuotationRequest } from "../types";
 const QuoteForm = () => {
   const handleFetchQuote = async (params: QuotationRequest) => {
     try {
-      const res = await axios.post("/api/quotation", {
-        ...params,
-      });
+      const res = await axios.post(
+        "/api/quotation",
+        {
+          ...params,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${window.localStorage.getItem("token")}`,
+          },
+        }
+      );
       console.log(res.data);
     } catch (error) {
       console.error(error);
@@ -130,6 +139,11 @@ const Home = () => {
 
   console.log(quotes.docs.map((doc) => doc.data())); */
 
+  const handleLogout = () => {
+    window.localStorage.removeItem("token");
+    setUser(null);
+  };
+
   const handleLogin = async (username) => {
     try {
       const res = await axios.post(
@@ -143,7 +157,12 @@ const Home = () => {
           },
         }
       );
-      if (res.status === 200 && res.data?.user) {
+      if (res.status === 200 && res.data?.token && res.data?.user) {
+        // Using local storage is not ideal for prod! Vulnerable to XSS/CSRF attacks. This is just for demoing.
+        // Better to use a secure cookie and/or access/refresh token pattern.
+        // More discussion: 
+        // https://dev.to/cotter/localstorage-vs-cookies-all-you-need-to-know-about-storing-jwt-tokens-securely-in-the-front-end-15id
+        window.localStorage.setItem("token", res.data.token);
         setUser(res.data.user);
       } else {
         throw new Error("An unexpected error occurred.");
@@ -211,7 +230,7 @@ const Home = () => {
 
       <DarkModeSwitch />
       <Footer>
-        <Text>Devon Wells -- Battleface Interview Challenge 11.16.21</Text>
+        <Text>Devon Wells -- Battleface Interview Challenge Nov 21</Text>
       </Footer>
       <CTA />
     </Container>
