@@ -14,8 +14,13 @@ import {
 import { QuotationRequest } from "../types";
 
 import { Formik, Form, Field } from "formik";
+import { useState } from "react";
 
-export const QuoteForm = () => {
+interface QuoteFormProps {
+  setQuote: (QuotationResponse) => void;
+}
+
+export const QuoteForm = ({ setQuote }: QuoteFormProps) => {
   const handleFetchQuote = async (params: QuotationRequest) => {
     try {
       const res = await axios.post(
@@ -29,8 +34,8 @@ export const QuoteForm = () => {
             Authorization: `Bearer ${window.localStorage.getItem("token")}`,
           },
         }
-      );
-      console.log(res.data);
+      );    
+      setQuote(res.data)
     } catch (error) {
       console.error(error);
     }

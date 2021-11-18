@@ -26,10 +26,19 @@ import { collection } from "firebase/firestore";
 import { db } from "../utils/firebase/clientApp";
 
 import axios from "axios";
-import { IUser } from "../types";
+import { IUser, QuotationResponse } from "../types";
+
+const CurrentQuote = ({ quote }: { quote: QuotationResponse }) => (
+  <Box>
+    <Heading as="h2" size="lg" mb="2rem">
+      ${quote.total}
+    </Heading>
+  </Box>
+);
 
 const Home = () => {
   const [user, setUser] = useState<IUser | null>(null);
+  const [quote, setQuote] = useState<QuotationResponse | null>(null);
 
   const fetchUser = async () => {
     try {
@@ -105,7 +114,8 @@ const Home = () => {
                 </Text>
               </Fade>
             </Box>
-            <QuoteForm />
+            {quote && <CurrentQuote quote={quote} />}
+            <QuoteForm setQuote={setQuote} />
             <Button
               maxWidth="fit-content"
               variant="link"
