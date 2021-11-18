@@ -1,20 +1,16 @@
 import {
-  Link as ChakraLink,
   Text,
   FormControl,
   FormLabel,
-  FormErrorMessage,
   FormHelperText,
   Box,
   Heading,
   Flex,
-  Stack,
   Input,
   Button,
   Fade,
 } from "@chakra-ui/react";
-import { CheckCircleIcon, LinkIcon } from "@chakra-ui/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Formik, Form, Field } from "formik";
 
 import { Hero } from "../components/Hero";
@@ -23,114 +19,37 @@ import { Main } from "../components/Main";
 import { DarkModeSwitch } from "../components/DarkModeSwitch";
 import { CTA } from "../components/CTA";
 import { Footer } from "../components/Footer";
+import { QuoteForm } from "../components/QuoteForm";
 
 import { useCollection } from "react-firebase-hooks/firestore";
 import { collection } from "firebase/firestore";
 import { db } from "../utils/firebase/clientApp";
 
 import axios from "axios";
-import { IUser, QuotationRequest } from "../types";
+import { IUser } from "../types";
 
-const QuoteForm = () => {
-  const handleFetchQuote = async (params: QuotationRequest) => {
+const Home = () => {
+  const [user, setUser] = useState<IUser | null>(null);
+
+  const fetchUser = async () => {
     try {
-      const res = await axios.post(
-        "/api/quotation",
-        {
-          ...params,
+      const res = await axios.get("/api/user", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${window.localStorage.getItem("token")}`,
         },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${window.localStorage.getItem("token")}`,
-          },
-        }
-      );
-      console.log(res.data);
+      });
+      setUser(res.data.user);
     } catch (error) {
       console.error(error);
     }
   };
 
-  return (
-    <Box my="2rem">
-      <Formik
-        initialValues={{
-          age: 28,
-          currency_id: "",
-          start_date: "",
-          end_date: "",
-        }}
-        onSubmit={(params, { setSubmitting }) => {
-          handleFetchQuote(params);
-          setSubmitting(false);
-        }}
-      >
-        {({ isSubmitting }) => (
-          <Form>
-            <Stack spacing={4}>
-              <Field name="age" placeholder="Age">
-                {({ field }) => (
-                  <FormControl id="age">
-                    <FormLabel>Age</FormLabel>
-                    <Input {...field} id="age" />
-                    <FormHelperText>
-                      It's free if you're under 18.
-                    </FormHelperText>
-                  </FormControl>
-                )}
-              </Field>
-              <Field name="currency_id" placeholder="Currency">
-                {({ field }) => (
-                  <FormControl id="currency_id">
-                    <FormLabel>Currency</FormLabel>
-                    <Input {...field} id="currency_id" />
-                    <FormHelperText>
-                      Choose the currency you want to use.
-                    </FormHelperText>
-                  </FormControl>
-                )}
-              </Field>
-              <Field name="start_date" placeholder="Start Date">
-                {({ field }) => (
-                  <FormControl id="start_date">
-                    <FormLabel>Start Date</FormLabel>
-                    <Input {...field} id="start_date" />
-                    <FormHelperText>
-                      Choose the start date of your trip (YYYY-MM-DD).
-                    </FormHelperText>
-                  </FormControl>
-                )}
-              </Field>
-              <Field name="end_date" placeholder="End Date">
-                {({ field }) => (
-                  <FormControl id="end_date">
-                    <FormLabel>End Date</FormLabel>
-                    <Input {...field} id="end_date" />
-                    <FormHelperText>
-                      Choose the end date of your trip (YYYY-MM-DD).
-                    </FormHelperText>
-                  </FormControl>
-                )}
-              </Field>
-            </Stack>
-            <Button
-              isLoading={isSubmitting}
-              mt={4}
-              colorScheme="teal"
-              type="submit"
-            >
-              Quote Me!
-            </Button>
-          </Form>
-        )}
-      </Formik>
-    </Box>
-  );
-};
-
-const Home = () => {
-  const [user, setUser] = useState<IUser | null>(null);
+  useEffect(() => {
+    if (!user && window.localStorage.getItem("token")) {
+      fetchUser();
+    }
+  }, [user]);
 
   /* const [quotes, quotesLoading, quotesError] = useCollection(
     collection(db, "quotes"),
@@ -180,9 +99,9 @@ const Home = () => {
           <Flex flexDirection="column" justifyContent="space-between">
             <Box>
               <Fade in={!!user}>
-                <Heading size="2xl">Welcome, {user.username}</Heading>
+                <Heading size="2xl">Welcome, {user.username}.</Heading>
                 <Text mt={2} fontSize="lg" color="gray.500">
-                  You are now logged in. Let's get you a quote.
+                  Let's get you a custom quote!
                 </Text>
               </Fade>
             </Box>
