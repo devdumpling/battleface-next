@@ -18,6 +18,8 @@ I also use GCP Firestore as a realtime, noSQL database to store quotes. This was
 
 One high level consideration I made early on is to focus on the API and authorization and mock authentication, so there's no formal user authentication process. Obviously, this would not be the approach in a real app. If I were to spend more time on this and extend it, I'd probably use Google OAuth (which is built into Firebase) since I'm already using that for db concerns.
 
+Another thing I would add if I had more time is more robust error-handling on the frontend. Curently, if an error happens it just gets logged to `console.error`. I figured that was okay for this, especially since it's not being graded on design?
+
 Please don't hesitate to reach out with any questions, comments, or concerns!
 I documented a lot of the code to make it clear what/why/how I do what I do.
 
