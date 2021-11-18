@@ -4,7 +4,7 @@ export const Hero = ({ title }: { title: string }) => (
   <Flex
     justifyContent="center"
     alignItems="center"
-    my="8rem"
+    mt="4rem"    
     bgGradient="linear(to-l, #7928CA, #FF0080)"
     bgClip="text"
   >

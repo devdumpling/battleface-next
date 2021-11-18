@@ -34,7 +34,7 @@ const ensureToken = (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-// Super contrived/hacky, but since we aren't doing authentication this'll do in a pinch
+// A bit contrived/hacky, but since we aren't doing authentication this'll do in a pinch
 // as a currentUser solution
 export default function userHandler(req: NextApiRequest, res: NextApiResponse) {
   const { method } = req;

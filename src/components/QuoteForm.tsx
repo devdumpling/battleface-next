@@ -7,6 +7,7 @@ import {
   FormHelperText,
   Box,
   Stack,
+  Flex,
   Input,
   Button,
 } from "@chakra-ui/react";
@@ -34,15 +35,15 @@ export const QuoteForm = ({ setQuote }: QuoteFormProps) => {
             Authorization: `Bearer ${window.localStorage.getItem("token")}`,
           },
         }
-      );    
-      setQuote(res.data)
+      );
+      setQuote(res.data);
     } catch (error) {
       console.error(error);
     }
   };
 
   return (
-    <Box my="2rem">
+    <Box my="2rem" width="100%">
       <Formik
         initialValues={{
           age: 28,
@@ -50,58 +51,62 @@ export const QuoteForm = ({ setQuote }: QuoteFormProps) => {
           start_date: "",
           end_date: "",
         }}
-        onSubmit={(params, { setSubmitting }) => {
-          handleFetchQuote(params);
+        onSubmit={async (params, { setSubmitting }) => {
+          await handleFetchQuote(params);
           setSubmitting(false);
         }}
       >
         {({ isSubmitting }) => (
           <Form>
-            <Stack spacing={4}>
-              <Field name="age" placeholder="Age">
-                {({ field }) => (
-                  <FormControl id="age">
-                    <FormLabel>Age</FormLabel>
-                    <Input {...field} id="age" />
-                    <FormHelperText>
-                      It's free if you're under 18.
-                    </FormHelperText>
-                  </FormControl>
-                )}
-              </Field>
-              <Field name="currency_id" placeholder="Currency">
-                {({ field }) => (
-                  <FormControl id="currency_id">
-                    <FormLabel>Currency</FormLabel>
-                    <Input {...field} id="currency_id" />
-                    <FormHelperText>
-                      Choose the currency you want to use.
-                    </FormHelperText>
-                  </FormControl>
-                )}
-              </Field>
-              <Field name="start_date" placeholder="Start Date">
-                {({ field }) => (
-                  <FormControl id="start_date">
-                    <FormLabel>Start Date</FormLabel>
-                    <Input {...field} id="start_date" />
-                    <FormHelperText>
-                      Choose the start date of your trip (YYYY-MM-DD).
-                    </FormHelperText>
-                  </FormControl>
-                )}
-              </Field>
-              <Field name="end_date" placeholder="End Date">
-                {({ field }) => (
-                  <FormControl id="end_date">
-                    <FormLabel>End Date</FormLabel>
-                    <Input {...field} id="end_date" />
-                    <FormHelperText>
-                      Choose the end date of your trip (YYYY-MM-DD).
-                    </FormHelperText>
-                  </FormControl>
-                )}
-              </Field>
+            <Stack spacing={8}>
+              <Flex gridGap={4} justifyContent="space-between">
+                <Field name="age" placeholder="Age">
+                  {({ field }) => (
+                    <FormControl id="age">
+                      <FormLabel>Age</FormLabel>
+                      <Input {...field} id="age" />
+                      <FormHelperText>
+                        It's free if you're under 18!
+                      </FormHelperText>
+                    </FormControl>
+                  )}
+                </Field>
+                <Field name="currency_id" placeholder="Currency">
+                  {({ field }) => (
+                    <FormControl id="currency_id">
+                      <FormLabel>Currency</FormLabel>
+                      <Input {...field} id="currency_id" />
+                      <FormHelperText>
+                        Choose the currency you want to use (USD, EUR, etc)
+                      </FormHelperText>
+                    </FormControl>
+                  )}
+                </Field>
+              </Flex>
+              <Flex gridGap={4} justifyContent="space-between">
+                <Field name="start_date" placeholder="Start Date">
+                  {({ field }) => (
+                    <FormControl id="start_date">
+                      <FormLabel>Start Date</FormLabel>
+                      <Input {...field} id="start_date" />
+                      <FormHelperText>
+                        When does your trip start? (YYYY-MM-DD)
+                      </FormHelperText>
+                    </FormControl>
+                  )}
+                </Field>
+                <Field name="end_date" placeholder="End Date">
+                  {({ field }) => (
+                    <FormControl id="end_date">
+                      <FormLabel>End Date</FormLabel>
+                      <Input {...field} id="end_date" />
+                      <FormHelperText>
+                        And when does it end? (YYYY-MM-DD)
+                      </FormHelperText>
+                    </FormControl>
+                  )}
+                </Field>
+              </Flex>
             </Stack>
             <Button
               isLoading={isSubmitting}

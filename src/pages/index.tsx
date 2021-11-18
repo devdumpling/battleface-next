@@ -6,6 +6,7 @@ import {
   Box,
   Heading,
   Flex,
+  Stack,
   Input,
   Button,
   Fade,
@@ -29,11 +30,14 @@ import axios from "axios";
 import { IUser, QuotationResponse } from "../types";
 
 const CurrentQuote = ({ quote }: { quote: QuotationResponse }) => (
-  <Box>
-    <Heading as="h2" size="lg" mb="2rem">
-      ${quote.total}
-    </Heading>
-  </Box>
+  <Stack spacing={0}>
+    <Text fontSize="4xl" color="teal">
+      Total: ${quote.total.toFixed(2)} {quote.currency_id}
+    </Text>
+    <Text fontSize="sm" color="gray.500">
+      Unique Quote Id: {quote.quotation_id}
+    </Text>
+  </Stack>
 );
 
 const Home = () => {
@@ -70,6 +74,7 @@ const Home = () => {
   const handleLogout = () => {
     window.localStorage.removeItem("token");
     setUser(null);
+    setQuote(null);
   };
 
   const handleLogin = async (username) => {
@@ -101,20 +106,26 @@ const Home = () => {
   };
 
   return (
-    <Container height="100vh">
+    <Container minHeight="100vh">
       <Hero />
       <Main>
         {user ? (
           <Flex flexDirection="column" justifyContent="space-between">
             <Box>
-              <Fade in={!!user}>
-                <Heading size="2xl">Welcome, {user.username}.</Heading>
-                <Text mt={2} fontSize="lg" color="gray.500">
-                  Let's get you a custom quote!
-                </Text>
-              </Fade>
+              {!quote ? (
+                <Fade in={!!user && !quote}>
+                  <Heading size="2xl">Welcome, {user.username}</Heading>
+                  <Text mt={2} fontSize="lg" color="gray.500">
+                    Let's get you a custom quote!
+                  </Text>
+                </Fade>
+              ) : (
+                <Fade in={!!quote}>
+                  <Heading size="2xl">{user.username}'s custom quote:</Heading>
+                  <CurrentQuote quote={quote} />
+                </Fade>
+              )}
             </Box>
-            {quote && <CurrentQuote quote={quote} />}
             <QuoteForm setQuote={setQuote} />
             <Button
               maxWidth="fit-content"
@@ -132,8 +143,8 @@ const Home = () => {
             </Text>
             <Formik
               initialValues={{ username: "" }}
-              onSubmit={(values, { setSubmitting }) => {
-                handleLogin(values.username);
+              onSubmit={async (values, { setSubmitting }) => {
+                await handleLogin(values.username);
                 setSubmitting(false);
               }}
             >
