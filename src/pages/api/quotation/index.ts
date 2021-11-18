@@ -6,24 +6,14 @@ import { collection, addDoc } from "firebase/firestore";
 import { db } from "../../../utils/firebase/clientApp";
 
 import { calcTotal, validateAge, validateDates } from "../../../utils/helpers";
-
-interface QuotationRequest {
-  age: number;
-  currency_id: string;
-  start_date: string;
-  end_date: string;
-}
-
-interface QuotationResponse {
-  total: number;
-  currency_id: string;
-  quotation_id: number;
-}
+import { QuotationRequest } from "../../../types";
 
 // TODO -- add a secret key to the .env file
 const SECRET = "secret";
 
 // Middleware to check for a valid token
+// In a prod environment, this should be an actual middleware function
+// but cheating a little bit here for the sake of the challenge
 const ensureToken = (req: NextApiRequest, res: NextApiResponse) => {
   const auth = req.headers.authorization;
   if (!auth) {
@@ -58,13 +48,13 @@ export default async function handler(
   const { user } = decodedToken as JwtPayload;
   const { method } = req;
 
-  // filter out non-post requests
+  // Filter out non-post requests
   if (method !== "POST") {
     res.setHeader("Allow", ["POST"]);
     res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  // Check that required params are present
+  // Check params present
   const { age, currency_id, start_date, end_date }: QuotationRequest = req.body;
   if ((age !== 0 && !age) || !currency_id || !start_date || !end_date) {
     res.statusCode = 400;
@@ -78,8 +68,7 @@ export default async function handler(
     res.json({ error: "Error: Invalid params" });
     return;
   }
-
-  // Calculate the quote total
+  
   const total = calcTotal(age, start_date, end_date);
 
   // Post a new quotation to the db
