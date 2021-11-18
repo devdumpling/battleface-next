@@ -6,6 +6,7 @@ import {
   FormErrorMessage,
   FormHelperText,
   Box,
+  Heading,
   Flex,
   Stack,
   Input,
@@ -102,7 +103,7 @@ const QuoteForm = () => {
                     </FormHelperText>
                   </FormControl>
                 )}
-              </Field>              
+              </Field>
             </Stack>
             <Button
               isLoading={isSubmitting}
@@ -160,11 +161,8 @@ const Home = () => {
           <Flex flexDirection="column" justifyContent="space-between">
             <Box>
               <Fade in={!!user}>
-                <Text fontSize="xl" fontWeight="bold" color="gray.500">
-                  Welcome, {user.username}!
-                </Text>
-
-                <Text fontSize="lg" color="gray.500">
+                <Heading size="2xl">Welcome, {user.username}</Heading>
+                <Text mt={2} fontSize="lg" color="gray.500">
                   You are now logged in. Let's get you a quote.
                 </Text>
               </Fade>
